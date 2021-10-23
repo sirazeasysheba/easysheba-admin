@@ -1,0 +1,14 @@
+* {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  //font-size: 14px;
+}
+.error {
+  position: absolute;
+  color: red !important;
+  font-size: 0.8rem;
+}
+
+@import "./home";
