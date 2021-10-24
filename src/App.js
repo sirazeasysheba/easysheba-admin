@@ -7,7 +7,7 @@ import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 import "./styles/style.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { isUserLoggedIn } from "./redux/actions";
+import { getAllCategory, isUserLoggedIn } from "./redux/actions";
 import Home from "./pages/Home";
 import Category from "./components/Category/Category";
 import Services from "./components/Services/Services";
@@ -18,6 +18,7 @@ function App() {
     if (!auth.authenticate) {
       dispatch(isUserLoggedIn());
     }
+    dispatch(getAllCategory());
   }, []);
   return (
     <div className="App">

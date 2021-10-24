@@ -5,10 +5,26 @@
   -moz-osx-font-smoothing: grayscale;
   //font-size: 14px;
 }
+
+@import "./home";
 .error {
   position: absolute;
   color: red !important;
   font-size: 0.8rem;
 }
-
-@import "./home";
+.edit-btn {
+  padding: 5px 20px;
+  font-size: 12px;
+  background-color: #333333;
+  border: none;
+  color: white;
+  border-radius: 5px;
+}
+.delete-btn {
+  padding: 5px 20px;
+  font-size: 12px;
+  background-color: red;
+  border: none;
+  color: white;
+  border-radius: 5px;
+}

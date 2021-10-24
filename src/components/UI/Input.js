@@ -17,7 +17,9 @@ const Input = ({ label, ...props }) => {
         }`}
         autoComplete="off"
       />
-      <ErrorMessage name={field.name} component="div" className="error" />
+      {ErrorMessage && (
+        <ErrorMessage name={field.name} component="div" className="error " />
+      )}
     </div>
   );
 };
