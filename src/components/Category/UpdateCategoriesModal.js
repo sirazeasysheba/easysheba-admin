@@ -27,6 +27,7 @@ const UpdateCategoriesModal = (props) => {
             <Row key={index}>
               <Col>
                 <ModalInput
+                  className="form-control-sm"
                   type="text"
                   value={item.name}
                   placeholder="Category Name"
@@ -42,6 +43,7 @@ const UpdateCategoriesModal = (props) => {
               </Col>
               <Col>
                 <Form.Select
+                  size="sm"
                   aria-label="Default select example"
                   value={item.parentId}
                   onChange={(e) =>
@@ -65,6 +67,7 @@ const UpdateCategoriesModal = (props) => {
                 <Form.Select
                   aria-label="Default select example"
                   value=""
+                  size="sm"
                   //onChange={(e) => setParentId(e.target.value)}
                 >
                   <option value="">Select Type</option>
@@ -91,6 +94,7 @@ const UpdateCategoriesModal = (props) => {
                   type="text"
                   value={item.name}
                   placeholder="Category Name"
+                  className="form-control-sm"
                   onChange={(e) =>
                     handleCategoryInput(
                       "name",
@@ -104,6 +108,7 @@ const UpdateCategoriesModal = (props) => {
               <Col>
                 <Form.Select
                   aria-label="Default select example"
+                  size="sm"
                   value={item.parentId}
                   onChange={(e) =>
                     handleCategoryInput(
@@ -124,6 +129,7 @@ const UpdateCategoriesModal = (props) => {
               </Col>
               <Col>
                 <Form.Select
+                  size="sm"
                   aria-label="Default select example"
                   value=""
                   //onChange={(e) => setParentId(e.target.value)}

@@ -7,10 +7,11 @@ import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 import "./styles/style.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { getAllCategory, isUserLoggedIn } from "./redux/actions";
+import { getInitialData, isUserLoggedIn } from "./redux/actions";
 import Home from "./pages/Home";
 import Category from "./components/Category/Category";
 import Services from "./components/Services/Services";
+import Orders from "./components/Orders/Orders";
 function App() {
   const auth = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -18,7 +19,7 @@ function App() {
     if (!auth.authenticate) {
       dispatch(isUserLoggedIn());
     }
-    dispatch(getAllCategory());
+    dispatch(getInitialData());
   }, []);
   return (
     <div className="App">
@@ -32,6 +33,9 @@ function App() {
         </PrivateRoute>
         <PrivateRoute exact path="/services">
           <Services />
+        </PrivateRoute>
+        <PrivateRoute exact path="/orders">
+          <Orders />
         </PrivateRoute>
         <Route exact path="/signup">
           <SignUp />
