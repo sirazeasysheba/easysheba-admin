@@ -7,24 +7,25 @@
 }
 
 @import "./home";
+@import "./modals";
 .error {
   position: absolute;
   color: red !important;
   font-size: 0.8rem;
 }
-.edit-btn {
-  padding: 5px 20px;
-  font-size: 12px;
-  background-color: #333333;
-  border: none;
-  color: white;
-  border-radius: 5px;
-}
-.delete-btn {
-  padding: 5px 20px;
-  font-size: 12px;
-  background-color: red;
-  border: none;
-  color: white;
-  border-radius: 5px;
-}
+// .edit-btn {
+//   padding: 5px 20px;
+//   font-size: 12px;
+//   background-color: #333333;
+//   border: none;
+//   color: white;
+//   border-radius: 5px;
+// }
+// .delete-btn {
+//   padding: 5px 20px;
+//   font-size: 12px;
+//   background-color: red;
+//   border: none;
+//   color: white;
+//   border-radius: 5px;
+// }

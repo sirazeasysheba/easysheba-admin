@@ -17,8 +17,14 @@ const Modals = (props) => {
               </Button>
             ))
           ) : (
-            <Button variant="primary" onClick={props.handleClose}>
-              Submit
+            <Button
+              {...props}
+              className="btn-sm shadow-none"
+              variant="primary"
+              onClick={props.handleClose}
+              style={{ backgroundColor: "#333333" }}
+            >
+              Save
             </Button>
           )}
         </Modal.Footer>

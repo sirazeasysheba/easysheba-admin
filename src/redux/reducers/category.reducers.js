@@ -27,7 +27,7 @@ const buildNewCategories = (parentId, categories, category) => {
         name: category.name,
         slug: category.slug,
         parentId: category.parentId,
-        children: category.children,
+        children: [],
       };
       myCategories.push({
         ...cat,
@@ -78,7 +78,6 @@ const categoryReducer = (state = initState, action) => {
         state.categories,
         action.payload.category
       );
-      console.log(updatedCategories);
 
       state = {
         ...state,
@@ -93,6 +92,49 @@ const categoryReducer = (state = initState, action) => {
         loading: false,
       };
       break;
+    case categoryConstants.UPDATE_CATEGORY_REQUEST:
+      state = {
+        ...state,
+        // error: action.payload.error,
+        loading: true,
+      };
+      break;
+    case categoryConstants.UPDATE_CATEGORY_SUCCESS:
+      state = {
+        ...state,
+        // error: action.payload.error,
+        loading: false,
+      };
+      break;
+    case categoryConstants.UPDATE_CATEGORY_FAILURE:
+      state = {
+        ...state,
+        // error: action.payload.error,
+        error: action.payload.error,
+      };
+      break;
+    case categoryConstants.DELETE_CATEGORY_REQUEST:
+      state = {
+        ...state,
+        // error: action.payload.error,
+        loading: true,
+      };
+      break;
+    case categoryConstants.DELETE_CATEGORY_SUCCESS:
+      state = {
+        ...state,
+        // error: action.payload.error,
+        loading: false,
+      };
+      break;
+    case categoryConstants.DELETE_CATEGORY_FAILURE:
+      state = {
+        ...state,
+        // error: action.payload.error,
+        error: action.payload.error,
+      };
+      break;
+
     default:
       return state;
   }
