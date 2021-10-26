@@ -3,7 +3,6 @@ import { Col, Container, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addCategory,
-  getAllCategory,
   updateCategoryAction,
   deleteCategories as deleteCategoriesAction,
 } from "../../redux/actions";
@@ -89,6 +88,7 @@ const Category = (props) => {
         value: category._id,
         name: category.name,
         parentId: category.parentId,
+        type: category.type,
       });
       if (category.children.length > 0) {
         createCategoryList(category.children, options);

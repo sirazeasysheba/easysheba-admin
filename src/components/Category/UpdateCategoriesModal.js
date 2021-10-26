@@ -66,14 +66,20 @@ const UpdateCategoriesModal = (props) => {
               <Col>
                 <Form.Select
                   aria-label="Default select example"
-                  value=""
+                  value={item.type}
                   size="sm"
-                  //onChange={(e) => setParentId(e.target.value)}
+                  onChange={(e) =>
+                    handleCategoryInput(
+                      "type",
+                      e.target.value,
+                      index,
+                      "expanded"
+                    )
+                  }
                 >
                   <option value="">Select Type</option>
-                  <option value="page">Page</option>
-                  <option value="store">Store</option>
-                  <option value="product">Product</option>
+                  <option value="cart">Card</option>
+                  <option value="list">List</option>
 
                   {/* {createCategoryList(category.categories).map((option) => (
               <option key={option.value} value={option.value}>
@@ -131,13 +137,19 @@ const UpdateCategoriesModal = (props) => {
                 <Form.Select
                   size="sm"
                   aria-label="Default select example"
-                  value=""
-                  //onChange={(e) => setParentId(e.target.value)}
+                  value={item.type}
+                  onChange={(e) =>
+                    handleCategoryInput(
+                      "type",
+                      e.target.value,
+                      index,
+                      "checked"
+                    )
+                  }
                 >
                   <option value="">Select Type</option>
-                  <option value="page">Page</option>
-                  <option value="store">Store</option>
-                  <option value="product">Product</option>
+                  <option value="cart">Cart</option>
+                  <option value="list">List</option>
 
                   {/* {createCategoryList(category.categories).map((option) => (
               <option key={option.value} value={option.value}>
