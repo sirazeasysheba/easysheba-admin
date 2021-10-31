@@ -19,8 +19,8 @@ function App() {
     if (!auth.authenticate) {
       dispatch(isUserLoggedIn());
     }
-    
-      dispatch(getInitialData());
+
+    dispatch(getInitialData());
   }, []);
   return (
     <div className="App">
@@ -51,5 +51,4 @@ function App() {
     </div>
   );
 }
-
 export default App;
