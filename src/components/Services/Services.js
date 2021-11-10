@@ -1,291 +1,267 @@
 import React, { useState } from "react";
-import { Form, Button, Container, Row, Col, Table } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
-import { addProduct } from "../../redux/actions";
-import Modals from "../UI/Modals";
+import { Col, Collapse, Container, Row, Form as Form2 } from "react-bootstrap";
+import CheckboxTree from "react-checkbox-tree";
+import {
+  IoIosArrowForward,
+  IoIosArrowDown,
+  IoIosAdd,
+  IoIosTrash,
+  IoIosCloudUpload,
+} from "react-icons/io";
+import { AiOutlineCheckSquare } from "react-icons/ai";
+import { useSelector } from "react-redux";
 import Layout from "../Layout/Layout";
-import ModalInput from "../UI/ModalInput";
-import { generatePublicUrl } from "../../urlConfig";
-const Services = (props) => {
-  //Product
-  const [name, setName] = useState("");
-  const [quantity, setQuantity] = useState("");
-  const [price, setPrice] = useState("");
-  const [description, setDescription] = useState("");
-  const [categoryId, setCategoryId] = useState("");
-  const [options, setOptions] = useState("");
-  const [optionsTitle, setOptionsTitle] = useState("");
-  const [productPictures, setProductPictures] = useState([]);
-  const dispatch = useDispatch();
-
-  //
-
-  const [show, setShow] = useState(false);
-  const [productShow, setProductShow] = useState(false);
-  const [productDetails, setProductDetails] = useState(null);
-  const handleClose = () => {
-    const form = new FormData();
-    form.append("name", name);
-    form.append("price", price);
-    form.append("quantity", quantity);
-    form.append("options", options);
-    form.append("optionTitle", optionsTitle);
-    form.append("description", description);
-    form.append("category", categoryId);
-    for (let pic of productPictures) {
-      form.append("productPicture", pic);
+import { IoCheckbox } from "react-icons/io5";
+import { Form, Formik } from "formik";
+import * as Yup from "yup";
+import Input from "../UI/Input";
+const Services = () => {
+  //States
+  const [open, setOpen] = useState(false);
+  const [checked, setChecked] = useState([]);
+  const [expanded, setExpanded] = useState([]);
+  const [checkedArray, setCheckedArray] = useState([]);
+  const [expandedArray, setExpandedArray] = useState([]);
+  const [serviceImage, setServiceImage] = useState("");
+  const [updateServiceModal, setUpdateServiceModal] = useState(false);
+  const [serviceName, setServiceName] = useState("");
+  const [parentId, setParentId] = useState("");
+  const [category, setCategory] = useState("");
+  //Redux Store data
+  const service = useSelector((state) => state.service);
+  const categories = useSelector((state) => state.category);
+  //Render Service Data
+  const renderServices = (services) => {
+    let serviceList = [];
+    for (let service of services) {
+      serviceList.push({
+        label: service.name,
+        value: service._id,
+        children:
+          service.children.length > 0 && renderServices(service.children),
+      });
     }
-
-    dispatch(addProduct(form));
-    setShow(false);
+    return serviceList;
   };
 
-  const handleShow = () => setShow(true);
-  const category = useSelector((state) => state.category);
-  const product = useSelector((state) => state.product);
-  console.log(product.products);
-
-  const createCategoryList = (categories, options = []) => {
-    for (let category of categories) {
-      options.push({ value: category._id, name: category.name });
-      if (category.children.length > 0) {
-        createCategoryList(category.children, options);
+  //Create Service List
+  const createServiceList = (services, options = []) => {
+    for (let service of services) {
+      options.push({
+        value: service._id,
+        name: service.name,
+        parentId: service.parentId,
+        category: service.category,
+      });
+      if (service.children.length > 0) {
+        createServiceList(service.children, options);
       }
     }
     return options;
   };
-
-  //handle product pictures
-  const handleProductPictures = (e) => {
-    setProductPictures([...productPictures, e.target.files[0]]);
-  };
-
-  const renderProducts = () => {
-    return (
-      <Table responsive style={{ fontSize: 12 }}>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Name</th>
-            <th>Price</th>
-            <th>Category</th>
-            <th>Quantity</th>
-          </tr>
-        </thead>
-        <tbody>
-          {product.products.length > 0
-            ? product.products.map((product, index) => (
-                <tr
-                  key={product._id}
-                  onClick={() => showProductDetailsModal(product)}
-                  style={{ cursor: "pointer" }}
-                >
-                  <td>{index + 1}</td>
-                  <td>{product.name}</td>
-                  <td>{product.price}</td>
-                  <td>{product.category.name}</td>
-                  <td>{product.quantity}</td>
-                </tr>
-              ))
-            : null}
-        </tbody>
-      </Table>
-    );
-  };
-
-  const renderAddProductModal = () => {
-    return (
-      <Modals
-        show={show}
-        handleClose={handleClose}
-        title={"Add New Service"}
-        size="lg"
-      >
-        <Row>
-          <Col>
-            <ModalInput
-              label="Name"
-              type="text"
-              value={name}
-              placeholder="Product Name"
-              onChange={(e) => setName(e.target.value)}
-              className="form-control-sm"
-            />
-          </Col>
-          <Col>
-            <label for="Category" class="form-label">
-              Category
-            </label>
-            <Form.Select
-              aria-label="Default select example"
-              id="Category"
-              value={categoryId}
-              onChange={(e) => setCategoryId(e.target.value)}
-              size="sm"
-            >
-              <option>Select Category</option>
-              {createCategoryList(category.categories).map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.name}
-                </option>
-              ))}
-            </Form.Select>
-          </Col>
-          <Col>
-            <ModalInput
-              label="Price"
-              type="text"
-              value={price}
-              placeholder="Price"
-              onChange={(e) => setPrice(e.target.value)}
-              className="form-control-sm"
-            />
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <ModalInput
-              label="Quantity"
-              type="text"
-              value={quantity}
-              placeholder="Quantity"
-              onChange={(e) => setQuantity(e.target.value)}
-              className="form-control-sm"
-            />
-          </Col>
-          <Col>
-            <ModalInput
-              label="Options"
-              type="text"
-              value={options}
-              placeholder="Options"
-              onChange={(e) => setOptions(e.target.value)}
-              className="form-control-sm"
-            />
-          </Col>
-          <Col>
-            <ModalInput
-              label="Options Title"
-              type="text"
-              value={optionsTitle}
-              placeholder="Options Title"
-              onChange={(e) => setOptionsTitle(e.target.value)}
-              className="form-control-sm"
-            />
-          </Col>
-        </Row>
-        <label for="Description" class="form-label">
-          Description
-        </label>
-        <textarea
-          className="form-control form-control-sm mb-3"
-          id="Description"
-          rows="3"
-          label="Description"
-          value={description}
-          placeholder="Description"
-          onChange={(e) => setDescription(e.target.value)}
-        />
-
-        <ModalInput
-          label="Images"
-          type="file"
-          placeholder="Image"
-          name="productPicture"
-          onChange={handleProductPictures}
-          className="form-control-sm"
-        />
-        {productPictures.length > 0
-          ? productPictures.map((pic, index) => (
-              <div key={index} className="mt-3" style={{ fontSize: 12 }}>
-                {index + 1}. {pic.name}
-              </div>
-            ))
-          : null}
-      </Modals>
-    );
-  };
-  const handleCloseProductDetails = () => {
-    setProductShow(false);
-  };
-  const showProductDetailsModal = (product) => {
-    setProductShow(true);
-    setProductDetails(product);
-  };
-  const renderProductDetailsModal = () => {
-    if (!productDetails) {
-      return null;
+  const createCategoryList = (categories, options = []) => {
+    for (let category of categories) {
+      for (let child of category.children)
+        options.push({ value: child._id, name: child.name });
     }
-    return (
-      <Modals
-        show={productShow}
-        handleClose={handleCloseProductDetails}
-        title={"Product Details"}
-        size="lg"
-      >
-        <Row>
-          <Col md={6}>
-            <label className="key">Name</label>
-            <p className="value">{productDetails.name}</p>
-          </Col>
-          <Col md={6}>
-            <label className="key">Price</label>
-            <p className="value">{productDetails.price}</p>
-          </Col>
-        </Row>
-        <Row>
-          <Col md={6}>
-            <label className="key">Category</label>
-            <p className="value">{productDetails.category.name}</p>
-          </Col>
-          <Col md={6}>
-            <label className="key">Quantity</label>
-            <p className="value">{productDetails.quantity}</p>
-          </Col>
-        </Row>
-        <Row>
-          <Col md={12}>
-            <label className="key">Description</label>
-            <p className="value">{productDetails.description}</p>
-          </Col>
-        </Row>
-        <Row>
-          <label> Product Pictures</label>
-          <Col className="d-flex mt-3 justify-content-center">
-            {productDetails.productPictures.map((pic) => (
-              <div>
-                <img
-                  src={generatePublicUrl(pic.img)}
-                  alt=""
-                  style={{ height: 100, marginRight: 10 }}
-                />
-              </div>
-            ))}
-          </Col>
-        </Row>
-      </Modals>
-    );
+    return options;
   };
+
+  //Add Service
+  const validate = Yup.object({
+    email: Yup.string().email("Email is Invalid").required("Email is required"),
+    password: Yup.string()
+      .min(6, "Password must be at least 6 characters")
+      .required("Password is required"),
+  });
+
+  //Update Service
+  const updateService = () => {
+    updateCheckedAndExpandedServices();
+    setUpdateServiceModal(true);
+  };
+  const updateCheckedAndExpandedServices = () => {
+    const services = createServiceList(service.services);
+    const checkedArray = [];
+    const expandedArray = [];
+    checked.length > 0 &&
+      checked.forEach((serviceId, index) => {
+        const service = services.find(
+          (service, _index) => serviceId === service.value
+        );
+        service && checkedArray.push(service);
+      });
+
+    expanded.length > 0 &&
+      expanded.forEach((serviceId, index) => {
+        const service = services.find(
+          (service, _index) => serviceId === service.value
+        );
+        service && expandedArray.push(service);
+      });
+    setCheckedArray(checkedArray);
+    setExpandedArray(expandedArray);
+  };
+
+  const handleServiceImage = (e) => {
+    setServiceImage(e.target.files[0]);
+  };
+
   return (
     <div>
       <Layout sidebar>
         <Container>
           <Row>
             <Col md={12}>
-              <div className="d-flex justify-content-between">
-                <h3>All Services</h3>
-                <Button variant="primary" onClick={handleShow}>
-                  Add
-                </Button>
+              <div className="d-flex justify-content-between mt-3">
+                <h3>Service</h3>
               </div>
             </Col>
           </Row>
-          <Row className="mt-5">
-            <Col md={12}>{renderProducts()}</Col>
+          <Row>
+            <Col md={12}>
+              <CheckboxTree
+                nodes={renderServices(service.services)}
+                checked={checked}
+                expanded={expanded}
+                onCheck={(checked) => setChecked(checked)}
+                onExpand={(expanded) => setExpanded(expanded)}
+                icons={{
+                  check: <IoCheckbox />,
+                  uncheck: <AiOutlineCheckSquare />,
+                  halfCheck: <AiOutlineCheckSquare />,
+                  expandClose: <IoIosArrowForward />,
+                  expandOpen: <IoIosArrowDown />,
+                }}
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <div className="action-btn-container mt-5">
+                <button
+                  className="add-btn"
+                  onClick={() => setOpen(!open)}
+                  aria-controls="example-collapse-text"
+                  aria-expanded={open}
+                >
+                  <div className="d-flex align-items-center justify-content-center">
+                    <IoIosAdd />
+                    <span className="ms-1">Add</span>
+                  </div>
+                </button>
+                <button className="edit-btn">
+                  <div className="d-flex align-items-center justify-content-center">
+                    <IoIosCloudUpload /> <span className="ms-2">Edit</span>
+                  </div>
+                </button>
+                <button className="delete-btn">
+                  <div className="d-flex align-items-center justify-content-center">
+                    <IoIosTrash /> <span className="ms-2">Delete</span>
+                  </div>
+                </button>
+              </div>
+            </Col>
+          </Row>
+          <Row>
+            <Collapse in={open}>
+              <div id="add-collapse" className="mt-5">
+                <div className="border">
+                  <Formik
+                    initialValues={{
+                      name: "",
+                    }}
+                    validationSchema={validate}
+                    onSubmit={(values) => {
+                      const user = values;
+                      user.parentId = parentId;
+                      user.category = category;
+                      console.log(user);
+                    }}
+                  >
+                    {(formik) => (
+                      <div className="m-5">
+                        <Form>
+                          <Row>
+                            <Col md={6}>
+                              <Input
+                                label="Service Name"
+                                type="text"
+                                placeholder="Service Name"
+                                name="serviceName"
+                                // onChange={(e) => setEmail(e.target.value)}
+                              />
+                            </Col>
+                            <Col md={6}>
+                              <Input
+                                label="Service Image"
+                                type="file"
+                                placeholder="Service Image"
+                                name="serviceImage"
+
+                                // onChange={(e) => setEmail(e.target.value)}
+                              />
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col md={6}>
+                              <Form2.Select
+                                aria-label="Default select example"
+                                style={{ maxWidth: 350 }}
+                                value={parentId}
+                                onChange={(e) => setParentId(e.target.value)}
+                              >
+                                <option>Select Service</option>
+                                {createServiceList(service.services).map(
+                                  (option) => (
+                                    <option
+                                      key={option.value}
+                                      value={option.value}
+                                    >
+                                      {option.name}
+                                    </option>
+                                  )
+                                )}
+                              </Form2.Select>
+                            </Col>
+                            <Col md={6}>
+                              <Form2.Select
+                                aria-label="Default select example"
+                                value={category}
+                                style={{ maxWidth: 350 }}
+                                onChange={(e) => setCategory(e.target.value)}
+                              >
+                                <option>Select Service</option>
+                                {createCategoryList(categories.categories).map(
+                                  (option) => (
+                                    <option
+                                      key={option.value}
+                                      value={option.value}
+                                    >
+                                      {option.name}
+                                    </option>
+                                  )
+                                )}
+                              </Form2.Select>
+                            </Col>
+                          </Row>
+                          {/* <Button
+                                type="submit"
+                                className="w-100 fw-medium shadow-none bg-success"
+                              >
+                                Login
+                              </Button> */}
+                        </Form>
+                      </div>
+                    )}
+                  </Formik>
+                </div>
+              </div>
+            </Collapse>
           </Row>
         </Container>
-        {renderAddProductModal()}
-        {renderProductDetailsModal()}
+
+        {/* Add Service Modal */}
       </Layout>
     </div>
   );

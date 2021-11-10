@@ -10,8 +10,9 @@ import { useEffect } from "react";
 import { getInitialData, isUserLoggedIn } from "./redux/actions";
 import Home from "./pages/Home";
 import Category from "./components/Category/Category";
-import Services from "./components/Services/Services";
 import Orders from "./components/Orders/Orders";
+import Product from "./components/Product/Product";
+import Services from "./components/Services/Services";
 function App() {
   const auth = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -34,6 +35,9 @@ function App() {
         </PrivateRoute>
         <PrivateRoute exact path="/services">
           <Services />
+        </PrivateRoute>
+        <PrivateRoute exact path="/products">
+          <Product />
         </PrivateRoute>
         <PrivateRoute exact path="/orders">
           <Orders />
