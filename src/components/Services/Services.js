@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Col, Collapse, Container, Row, Form as Form2 } from "react-bootstrap";
+import { Col, Container, Row } from "react-bootstrap";
 import CheckboxTree from "react-checkbox-tree";
 import {
   IoIosArrowForward,
@@ -9,27 +9,30 @@ import {
   IoIosCloudUpload,
 } from "react-icons/io";
 import { AiOutlineCheckSquare } from "react-icons/ai";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Layout from "../Layout/Layout";
 import { IoCheckbox } from "react-icons/io5";
-import { Form, Formik } from "formik";
-import * as Yup from "yup";
-import Input from "../UI/Input";
+
+import AddServiceModal from "./AddServiceModal";
+import { deleteServicesAction, updateServiceAction } from "../../redux/actions";
+import UpdateServiceModal from "./UpdateServiceModal";
+import DeleteServiceModal from "./DeleteServiceModal";
 const Services = () => {
   //States
-  const [open, setOpen] = useState(false);
+  const [show, setShow] = useState(false);
   const [checked, setChecked] = useState([]);
   const [expanded, setExpanded] = useState([]);
   const [checkedArray, setCheckedArray] = useState([]);
   const [expandedArray, setExpandedArray] = useState([]);
   const [serviceImage, setServiceImage] = useState("");
-  const [updateServiceModal, setUpdateServiceModal] = useState(false);
-  const [serviceName, setServiceName] = useState("");
+  const [showUpdateServiceModal, setShowUpdateServiceModal] = useState(false);
+  const [showDeleteServiceModal, setShowDeleteServiceModal] = useState(false);
   const [parentId, setParentId] = useState("");
   const [category, setCategory] = useState("");
   //Redux Store data
   const service = useSelector((state) => state.service);
   const categories = useSelector((state) => state.category);
+  const dispatch = useDispatch();
   //Render Service Data
   const renderServices = (services) => {
     let serviceList = [];
@@ -51,6 +54,10 @@ const Services = () => {
         value: service._id,
         name: service.name,
         parentId: service.parentId,
+        priceRange: service.priceRange,
+        rating: service.rating,
+        information: service.information,
+        details: service.details,
         category: service.category,
       });
       if (service.children.length > 0) {
@@ -59,26 +66,73 @@ const Services = () => {
     }
     return options;
   };
+
   const createCategoryList = (categories, options = []) => {
     for (let category of categories) {
-      for (let child of category.children)
-        options.push({ value: child._id, name: child.name });
+      options.push({
+        value: category._id,
+        name: category.name,
+        parentId: category.parentId,
+        type: category.type,
+      });
+      if (category.children.length > 0) {
+        createCategoryList(category.children, options);
+      }
     }
     return options;
   };
 
+  //handle Service Input
+
+  const handleServiceInput = (key, value, index, type) => {
+    if (type === "checked") {
+      const updatedCheckedArray = checkedArray.map((item, _index) =>
+        index === _index ? { ...item, [key]: value } : item
+      );
+      setCheckedArray(updatedCheckedArray);
+    } else if (type === "expanded") {
+      const updatedExpandedArray = expandedArray.map((item, _index) =>
+        index === _index ? { ...item, [key]: value } : item
+      );
+      setExpandedArray(updatedExpandedArray);
+    }
+    console.log(checkedArray, expandedArray);
+  };
+
   //Add Service
-  const validate = Yup.object({
-    email: Yup.string().email("Email is Invalid").required("Email is required"),
-    password: Yup.string()
-      .min(6, "Password must be at least 6 characters")
-      .required("Password is required"),
-  });
+  const handleClose = () => setShow(false);
 
   //Update Service
   const updateService = () => {
     updateCheckedAndExpandedServices();
-    setUpdateServiceModal(true);
+    setShowUpdateServiceModal(true);
+  };
+  const updateServiceForm = () => {
+    const form = new FormData();
+    expandedArray.forEach((item, index) => {
+      form.append("_id", item.value);
+      form.append("name", item.name);
+      form.append("priceRange", item.priceRange);
+      form.append("parentId", item.parentId ? item.parentId : "");
+      form.append("type", item.type);
+      form.append("information", item.information);
+      form.append("details", item.details);
+      form.append("rating", item.rating);
+      form.append("category", item.category);
+    });
+    checkedArray.forEach((item, index) => {
+      form.append("_id", item.value);
+      form.append("name", item.name);
+      form.append("priceRange", item.priceRange);
+      form.append("parentId", item.parentId ? item.parentId : "");
+      form.append("type", item.type);
+      form.append("information", item.information);
+      form.append("details", item.details);
+      form.append("rating", item.rating);
+      form.append("category", item.category);
+    });
+    dispatch(updateServiceAction(form));
+    setShowUpdateServiceModal(false);
   };
   const updateCheckedAndExpandedServices = () => {
     const services = createServiceList(service.services);
@@ -105,6 +159,22 @@ const Services = () => {
 
   const handleServiceImage = (e) => {
     setServiceImage(e.target.files[0]);
+  };
+
+  //Delete Service
+  const deleteService = () => {
+    updateCheckedAndExpandedServices();
+    setShowDeleteServiceModal(true);
+  };
+
+  const deleteServices = () => {
+    const checkedIdsArray = checkedArray.map((item, index) => ({
+      _id: item.value,
+    }));
+    if (checkedIdsArray.length > 0) {
+      dispatch(deleteServicesAction(checkedIdsArray));
+    }
+    setShowDeleteServiceModal(false);
   };
 
   return (
@@ -139,23 +209,18 @@ const Services = () => {
           <Row>
             <Col>
               <div className="action-btn-container mt-5">
-                <button
-                  className="add-btn"
-                  onClick={() => setOpen(!open)}
-                  aria-controls="example-collapse-text"
-                  aria-expanded={open}
-                >
+                <button className="add-btn" onClick={() => setShow(true)}>
                   <div className="d-flex align-items-center justify-content-center">
                     <IoIosAdd />
                     <span className="ms-1">Add</span>
                   </div>
                 </button>
-                <button className="edit-btn">
+                <button className="edit-btn" onClick={updateService}>
                   <div className="d-flex align-items-center justify-content-center">
                     <IoIosCloudUpload /> <span className="ms-2">Edit</span>
                   </div>
                 </button>
-                <button className="delete-btn">
+                <button className="delete-btn" onClick={deleteService}>
                   <div className="d-flex align-items-center justify-content-center">
                     <IoIosTrash /> <span className="ms-2">Delete</span>
                   </div>
@@ -163,105 +228,46 @@ const Services = () => {
               </div>
             </Col>
           </Row>
-          <Row>
-            <Collapse in={open}>
-              <div id="add-collapse" className="mt-5">
-                <div className="border">
-                  <Formik
-                    initialValues={{
-                      name: "",
-                    }}
-                    validationSchema={validate}
-                    onSubmit={(values) => {
-                      const user = values;
-                      user.parentId = parentId;
-                      user.category = category;
-                      console.log(user);
-                    }}
-                  >
-                    {(formik) => (
-                      <div className="m-5">
-                        <Form>
-                          <Row>
-                            <Col md={6}>
-                              <Input
-                                label="Service Name"
-                                type="text"
-                                placeholder="Service Name"
-                                name="serviceName"
-                                // onChange={(e) => setEmail(e.target.value)}
-                              />
-                            </Col>
-                            <Col md={6}>
-                              <Input
-                                label="Service Image"
-                                type="file"
-                                placeholder="Service Image"
-                                name="serviceImage"
-
-                                // onChange={(e) => setEmail(e.target.value)}
-                              />
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col md={6}>
-                              <Form2.Select
-                                aria-label="Default select example"
-                                style={{ maxWidth: 350 }}
-                                value={parentId}
-                                onChange={(e) => setParentId(e.target.value)}
-                              >
-                                <option>Select Service</option>
-                                {createServiceList(service.services).map(
-                                  (option) => (
-                                    <option
-                                      key={option.value}
-                                      value={option.value}
-                                    >
-                                      {option.name}
-                                    </option>
-                                  )
-                                )}
-                              </Form2.Select>
-                            </Col>
-                            <Col md={6}>
-                              <Form2.Select
-                                aria-label="Default select example"
-                                value={category}
-                                style={{ maxWidth: 350 }}
-                                onChange={(e) => setCategory(e.target.value)}
-                              >
-                                <option>Select Service</option>
-                                {createCategoryList(categories.categories).map(
-                                  (option) => (
-                                    <option
-                                      key={option.value}
-                                      value={option.value}
-                                    >
-                                      {option.name}
-                                    </option>
-                                  )
-                                )}
-                              </Form2.Select>
-                            </Col>
-                          </Row>
-                          {/* <Button
-                                type="submit"
-                                className="w-100 fw-medium shadow-none bg-success"
-                              >
-                                Login
-                              </Button> */}
-                        </Form>
-                      </div>
-                    )}
-                  </Formik>
-                </div>
-              </div>
-            </Collapse>
-          </Row>
         </Container>
 
         {/* Add Service Modal */}
+        <AddServiceModal
+          size="lg"
+          title="Add New Service"
+          show={show}
+          handleClose={handleClose}
+          categoryList={createCategoryList(categories.categories)}
+          serviceList={createServiceList(service.services)}
+          handleServiceImage={handleServiceImage}
+          parentId={parentId}
+          setParentId={setParentId}
+          category={category}
+          setCategory={setCategory}
+          btnTitle="Close"
+        />
+
+        {/* Update Service Modal */}
+        <UpdateServiceModal
+          size="lg"
+          title="Update Service"
+          show={showUpdateServiceModal}
+          handleClose={updateServiceForm}
+          expandedArray={expandedArray}
+          checkedArray={checkedArray}
+          handleServiceInput={handleServiceInput}
+          categoryList={createCategoryList(categories.categories)}
+          serviceList={createServiceList(service.services)}
+        />
+
+        {/* DeleteCategoryModal */}
+        <DeleteServiceModal
+          title="Confirm? "
+          show={showDeleteServiceModal}
+          handleClose={() => setShowDeleteServiceModal(false)}
+          deleteServices={deleteServices}
+          expandedArray={expandedArray}
+          checkedArray={checkedArray}
+        ></DeleteServiceModal>
       </Layout>
     </div>
   );

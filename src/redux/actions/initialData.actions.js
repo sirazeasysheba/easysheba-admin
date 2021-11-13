@@ -8,7 +8,6 @@ import {
 export const getInitialData = () => {
   return async (dispatch) => {
     const res = await axios.post(`/initialdata`);
-    console.log(res);
     if (res.status === 200) {
       const { categories, products, services } = res.data;
       dispatch({

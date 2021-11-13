@@ -7,7 +7,6 @@ const initialState = {
   success: false,
 };
 const userReducer = (state = initialState, action) => {
-  console.log(action);
   switch (action.type) {
     case userConstants.USER_REGISTRATION_REQUEST:
       state = {

@@ -7,8 +7,6 @@ const getAllService = () => {
       type: serviceConstants.GET_ALL_SERVICES_REQUEST,
     });
     const res = await axios.get(`/service/getservice`);
-    console.log(res);
-
     if (res.status === 200) {
       const { serviceList } = res.data;
       dispatch({
@@ -33,7 +31,6 @@ export const addService = (form) => {
     });
     try {
       const res = await axios.post(`/service/create`, form);
-      console.log(res);
       if (res.status === 201) {
         dispatch({
           type: serviceConstants.ADD_NEW_SERVICES_SUCCESS,
@@ -50,13 +47,14 @@ export const addService = (form) => {
     }
   };
 };
-export const updateCategoryAction = (form) => {
+export const updateServiceAction = (form) => {
+  console.log(form);
   return async (dispatch) => {
     dispatch({
       type: serviceConstants.UPDATE_SERVICES_REQUEST,
     });
     const res = await axios.post(`/service/update`, form);
-    console.log(res);
+
     if (res.status === 201) {
       dispatch({
         type: serviceConstants.UPDATE_SERVICES_SUCCESS,
@@ -71,7 +69,8 @@ export const updateCategoryAction = (form) => {
     }
   };
 };
-export const deleteCategories = (ids) => {
+
+export const deleteServicesAction = (ids) => {
   return async (dispatch) => {
     dispatch({
       type: serviceConstants.DELETE_SERVICES_REQUEST,

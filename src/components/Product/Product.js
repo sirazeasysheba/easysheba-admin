@@ -1,59 +1,112 @@
 import React, { useState } from "react";
 import { Form, Button, Container, Row, Col, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { addProduct } from "../../redux/actions";
+import {
+  addProduct,
+  deleteProductAction,
+  updateProductAction,
+} from "../../redux/actions";
 import Modals from "../UI/Modals";
 import Layout from "../Layout/Layout";
 import ModalInput from "../UI/ModalInput";
-import { generatePublicUrl } from "../../urlConfig";
+import DeleteProductModals from "./DeleteProductModals";
+import { IoIosTrash } from "react-icons/io";
+import UpdateProductModal from "./UpdateProductModal";
 const Product = (props) => {
   //Product
   const [name, setName] = useState("");
-  const [quantity, setQuantity] = useState("");
   const [price, setPrice] = useState("");
-  const [description, setDescription] = useState("");
-  const [categoryId, setCategoryId] = useState("");
-  const [options, setOptions] = useState("");
-  const [optionsTitle, setOptionsTitle] = useState("");
-  const [productPictures, setProductPictures] = useState([]);
+  const [service, setService] = useState("");
+
   const dispatch = useDispatch();
 
   const [show, setShow] = useState(false);
   const [productShow, setProductShow] = useState(false);
   const [productDetails, setProductDetails] = useState(null);
-  const handleClose = () => {
-    const form = new FormData();
-    form.append("name", name);
-    form.append("price", price);
-    form.append("quantity", quantity);
-    form.append("options", options);
-    form.append("optionTitle", optionsTitle);
-    form.append("description", description);
-    form.append("category", categoryId);
-    for (let pic of productPictures) {
-      form.append("productPicture", pic);
-    }
+  const [productById, setProductById] = useState([]);
+  const [showUpdateProductModal, setShowUpdateProductModal] = useState(false);
+  const [productToUpdate, setProductToUpdate] = useState("");
 
-    dispatch(addProduct(form));
+  const [showDeleteProductModal, setShowDeleteProductModal] = useState(false);
+  const [productToDelete, setProductToDelete] = useState("");
+  const handleClose = () => {
+    const product = { name, price, service };
+    dispatch(addProduct(product));
     setShow(false);
   };
 
   const handleShow = () => setShow(true);
-  const category = useSelector((state) => state.category);
+  const services = useSelector((state) => state.service);
   const product = useSelector((state) => state.product);
-  console.log(product.products);
 
-  const createCategoryList = (categories, options = []) => {
-    for (let category of categories) {
-      for (let child of category.children)
-        options.push({ value: child._id, name: child.name });
+  const createServiceList = (services, options = []) => {
+    for (let service of services) {
+      for (let child of service.children) {
+        options.push({
+          value: child._id,
+          name: child.name,
+          priceRange: child.priceRange,
+          rating: child.rating,
+          details: child.details,
+          information: child.information,
+          category: child.category.name,
+          parentId: child.parentId,
+        });
+      }
     }
     return options;
   };
+  //
+  const getServiceById = (parentId) => {
+    const service = services.services.find(
+      (service) => service._id === parentId
+    );
+    const serviceName = service.name;
+    return serviceName;
+  };
 
-  //handle product pictures
-  const handleProductPictures = (e) => {
-    setProductPictures([...productPictures, e.target.files[0]]);
+  const showProductDetailsModal = (service) => {
+    setProductShow(true);
+    const productList = [];
+    for (let pro of product.products) {
+      if (pro.service && pro.service._id === service.value) {
+        productList.push(pro);
+      }
+    }
+    setProductDetails(service);
+    setProductById(productList);
+  };
+
+  const updateProductModal = (product) => {
+    setProductToUpdate(product);
+    setShowUpdateProductModal(true);
+  };
+  const updateProductForm = () => {
+    const form = new FormData();
+    form.append("_id", productToUpdate.value);
+    form.append("name", productToUpdate.name);
+    form.append("price", productToUpdate.price);
+    dispatch(updateProductAction(form));
+    setShowUpdateProductModal(false);
+  };
+
+  const handleProductInput = (key, value) => {
+    const updatedProductToUpdate = { ...productToUpdate, [key]: value };
+    setProductToUpdate(updatedProductToUpdate);
+  };
+
+  //Delete product
+  const deleteProductModal = (product) => {
+    console.log(product._id);
+    setProductToDelete(product._id);
+    setShowDeleteProductModal(true);
+  };
+  const deleteProductById = () => {
+    if (productToDelete) {
+      console.log(productToDelete);
+      dispatch(deleteProductAction(productToDelete));
+    }
+    setShowDeleteProductModal(false);
   };
 
   const renderProducts = () => {
@@ -63,24 +116,26 @@ const Product = (props) => {
           <tr>
             <th>#</th>
             <th>Name</th>
-            <th>Price</th>
+            <th>Parent Service</th>
+            <th>Price Range</th>
+            <th>Rating</th>
             <th>Category</th>
-            <th>Quantity</th>
           </tr>
         </thead>
         <tbody>
-          {product.products.length > 0
-            ? product.products.map((product, index) => (
+          {createServiceList(services.services).length > 0
+            ? createServiceList(services.services).map((service, index) => (
                 <tr
-                  key={product._id}
-                  onClick={() => showProductDetailsModal(product)}
+                  key={index}
+                  onClick={() => showProductDetailsModal(service)}
                   style={{ cursor: "pointer" }}
                 >
                   <td>{index + 1}</td>
-                  <td>{product.name}</td>
-                  <td>{product.price}</td>
-                  <td>{product.category.name}</td>
-                  <td>{product.quantity}</td>
+                  <td>{service.name}</td>
+                  <td>{getServiceById(service.parentId)}</td>
+                  <td>{service.priceRange}</td>
+                  <td>{service.rating}</td>
+                  <td>{service.category}</td>
                 </tr>
               ))
             : null}
@@ -94,33 +149,33 @@ const Product = (props) => {
       <Modals
         show={show}
         handleClose={handleClose}
-        title={"Add New Service"}
+        title={"Add New Package"}
         size="lg"
       >
         <Row>
           <Col>
             <ModalInput
-              label="Name"
+              label="Package Name"
               type="text"
               value={name}
-              placeholder="Product Name"
+              placeholder="Package Name"
               onChange={(e) => setName(e.target.value)}
               className="form-control-sm"
             />
           </Col>
           <Col>
             <label for="Category" class="form-label">
-              Category
+              Sub-Service
             </label>
             <Form.Select
               aria-label="Default select example"
               id="Category"
-              value={categoryId}
-              onChange={(e) => setCategoryId(e.target.value)}
+              value={service}
+              onChange={(e) => setService(e.target.value)}
               size="sm"
             >
-              <option>Select Category</option>
-              {createCategoryList(category.categories).map((option) => (
+              <option>Select Sub-Service</option>
+              {createServiceList(services.services).map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.name}
                 </option>
@@ -138,76 +193,13 @@ const Product = (props) => {
             />
           </Col>
         </Row>
-        <Row>
-          <Col>
-            <ModalInput
-              label="Quantity"
-              type="text"
-              value={quantity}
-              placeholder="Quantity"
-              onChange={(e) => setQuantity(e.target.value)}
-              className="form-control-sm"
-            />
-          </Col>
-          <Col>
-            <ModalInput
-              label="Options"
-              type="text"
-              value={options}
-              placeholder="Options"
-              onChange={(e) => setOptions(e.target.value)}
-              className="form-control-sm"
-            />
-          </Col>
-          <Col>
-            <ModalInput
-              label="Options Title"
-              type="text"
-              value={optionsTitle}
-              placeholder="Options Title"
-              onChange={(e) => setOptionsTitle(e.target.value)}
-              className="form-control-sm"
-            />
-          </Col>
-        </Row>
-        <label for="Description" class="form-label">
-          Description
-        </label>
-        <textarea
-          className="form-control form-control-sm mb-3"
-          id="Description"
-          rows="3"
-          label="Description"
-          value={description}
-          placeholder="Description"
-          onChange={(e) => setDescription(e.target.value)}
-        />
-
-        <ModalInput
-          label="Images"
-          type="file"
-          placeholder="Image"
-          name="productPicture"
-          onChange={handleProductPictures}
-          className="form-control-sm"
-        />
-        {productPictures.length > 0
-          ? productPictures.map((pic, index) => (
-              <div key={index} className="mt-3" style={{ fontSize: 12 }}>
-                {index + 1}. {pic.name}
-              </div>
-            ))
-          : null}
       </Modals>
     );
   };
   const handleCloseProductDetails = () => {
     setProductShow(false);
   };
-  const showProductDetailsModal = (product) => {
-    setProductShow(true);
-    setProductDetails(product);
-  };
+
   const renderProductDetailsModal = () => {
     if (!productDetails) {
       return null;
@@ -220,45 +212,94 @@ const Product = (props) => {
         size="lg"
       >
         <Row>
-          <Col md={6}>
-            <label className="key">Name</label>
-            <p className="value">{productDetails.name}</p>
-          </Col>
-          <Col md={6}>
-            <label className="key">Price</label>
-            <p className="value">{productDetails.price}</p>
-          </Col>
+          <h5 className="value text-center fw-bold mb-3">
+            {productDetails.name}
+          </h5>
         </Row>
         <Row>
-          <Col md={6}>
+          <Col md={4}>
+            <label className="key text-center">Price Range</label>
+            <p className="value">{productDetails.priceRange}</p>
+          </Col>
+          <Col md={4}>
             <label className="key">Category</label>
-            <p className="value">{productDetails.category.name}</p>
+            <p className="value">{productDetails.category}</p>
           </Col>
-          <Col md={6}>
-            <label className="key">Quantity</label>
-            <p className="value">{productDetails.quantity}</p>
-          </Col>
-        </Row>
-        <Row>
-          <Col md={12}>
-            <label className="key">Description</label>
-            <p className="value">{productDetails.description}</p>
+          <Col md={4}>
+            <label className="key">Rating</label>
+            <p className="value">{productDetails.rating} out of 5</p>
           </Col>
         </Row>
         <Row>
-          <label> Product Pictures</label>
-          <Col className="d-flex mt-3 justify-content-center">
-            {productDetails.productPictures.map((pic) => (
-              <div>
-                <img
-                  src={generatePublicUrl(pic.img)}
-                  alt=""
-                  style={{ height: 100, marginRight: 10 }}
-                />
-              </div>
-            ))}
-          </Col>
+          <label className="key">Details</label>
+          <p className="value">{productDetails.details}</p>
         </Row>
+        <Row>
+          <label className="key">Information</label>
+          <p className="value">{productDetails.information}</p>
+        </Row>
+        <Row className="m-5">
+          <h5 className="text-center fw-bold">Packages</h5>
+          <Table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Package</th>
+                <th>Price</th>
+              </tr>
+            </thead>
+            <tbody>
+              {productById.length > 0
+                ? productById.map((pro, index) => (
+                    <tr key={index}>
+                      <td>{index + 1}</td>
+                      <td>{pro.name}</td>
+                      <td>{pro.price}</td>
+                      <td style={{ cursor: "pointer" }}>
+                        {" "}
+                        <IoIosTrash className="text-danger" />{" "}
+                        <span
+                          className="ms-2"
+                          onClick={() => updateProductModal(pro)}
+                        >
+                          Edit
+                        </span>
+                      </td>
+                      <td style={{ cursor: "pointer" }}>
+                        {" "}
+                        <IoIosTrash className="text-danger" />{" "}
+                        <span
+                          className="ms-2"
+                          onClick={() => deleteProductModal(pro)}
+                        >
+                          Delete
+                        </span>
+                      </td>
+                    </tr>
+                  ))
+                : null}
+            </tbody>
+          </Table>
+        </Row>
+
+        {/* UpdateProductModal */}
+        <UpdateProductModal
+          show={showUpdateProductModal}
+          handleClose={updateProductForm}
+          title={"Update Package"}
+          size={"md"}
+          handleProductInput={handleProductInput}
+          productToUpdate={productToUpdate}
+        ></UpdateProductModal>
+
+        {/* Delete Product Modal */}
+
+        <DeleteProductModals
+          title="Confirm? "
+          show={showDeleteProductModal}
+          handleClose={() => setShowDeleteProductModal(false)}
+          deleteProductById={deleteProductById}
+        ></DeleteProductModals>
       </Modals>
     );
   };
@@ -271,7 +312,7 @@ const Product = (props) => {
               <div className="d-flex justify-content-between">
                 <h3>All Services</h3>
                 <Button variant="primary" onClick={handleShow}>
-                  Add
+                  Add Package
                 </Button>
               </div>
             </Col>

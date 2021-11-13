@@ -24,7 +24,7 @@ const Modals = (props) => {
               onClick={props.handleClose}
               style={{ backgroundColor: "#333333" }}
             >
-              Save
+              {props.btnTitle ? props.btnTitle : "Save"}
             </Button>
           )}
         </Modal.Footer>
