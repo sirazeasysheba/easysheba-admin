@@ -81,12 +81,9 @@ const Product = (props) => {
     setProductToUpdate(product);
     setShowUpdateProductModal(true);
   };
+
   const updateProductForm = () => {
-    const form = new FormData();
-    form.append("_id", productToUpdate.value);
-    form.append("name", productToUpdate.name);
-    form.append("price", productToUpdate.price);
-    dispatch(updateProductAction(form));
+    dispatch(updateProductAction(productToUpdate));
     setShowUpdateProductModal(false);
   };
 

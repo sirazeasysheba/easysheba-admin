@@ -4,6 +4,7 @@ const initialState = {
   products: [],
 };
 const productReducer = (state = initialState, action) => {
+  console.log(action);
   switch (action.type) {
     case productConstants.GET_ALL_PRODUCTS_REQUEST:
       state = {

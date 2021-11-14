@@ -138,7 +138,7 @@ const UpdateServiceModal = (props) => {
                     <Form.Select
                       aria-label="Default select example"
                       size="sm"
-                      value={item.parentId}
+                      value={item.category}
                       onChange={(e) =>
                         handleServiceInput(
                           "category",

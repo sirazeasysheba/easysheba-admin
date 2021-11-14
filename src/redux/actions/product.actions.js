@@ -32,13 +32,12 @@ export const addProduct = (product) => {
   };
 };
 
-export const updateProductAction = (form) => {
-  // console.log(form);
+export const updateProductAction = (productToUpdate) => {
   return async (dispatch) => {
     dispatch({
       type: productConstants.UPDATE_PRODUCTS_REQUEST,
     });
-    const res = await axios.post(`/product/update`, form);
+    const res = await axios.post(`/product/update`, productToUpdate);
     if (res.status === 201) {
       dispatch({
         type: productConstants.UPDATE_PRODUCTS_SUCCESS,

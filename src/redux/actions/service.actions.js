@@ -48,7 +48,6 @@ export const addService = (form) => {
   };
 };
 export const updateServiceAction = (form) => {
-  console.log(form);
   return async (dispatch) => {
     dispatch({
       type: serviceConstants.UPDATE_SERVICES_REQUEST,

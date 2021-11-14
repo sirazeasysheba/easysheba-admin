@@ -118,7 +118,7 @@ const Services = () => {
       form.append("information", item.information);
       form.append("details", item.details);
       form.append("rating", item.rating);
-      form.append("category", item.category);
+      form.append("category", item.category ? item.category : "");
     });
     checkedArray.forEach((item, index) => {
       form.append("_id", item.value);
@@ -129,7 +129,7 @@ const Services = () => {
       form.append("information", item.information);
       form.append("details", item.details);
       form.append("rating", item.rating);
-      form.append("category", item.category);
+      form.append("category", item.category ? item.category : "");
     });
     dispatch(updateServiceAction(form));
     setShowUpdateServiceModal(false);
