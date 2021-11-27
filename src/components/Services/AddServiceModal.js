@@ -19,6 +19,7 @@ const AddServiceModal = (props) => {
     handleServiceImage,
     serviceList,
     categoryList,
+    serviceImage,
     btnTitle,
   } = props;
   const validate = Yup.object({
@@ -55,7 +56,8 @@ const AddServiceModal = (props) => {
                   const service = values;
                   service.parentId = parentId;
                   service.category = category;
-                  console.log(service);
+                  // service.serviceImage = serviceImage;
+                  console.log(service, serviceImage);
                   dispatch(addService(service));
                 }}
               >

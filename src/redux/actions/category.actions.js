@@ -30,6 +30,7 @@ export const addCategory = (form) => {
     dispatch({
       type: categoryConstants.ADD_NEW_CATEGORY_REQUEST,
     });
+
     try {
       const res = await axios.post(`/category/create`, form);
       console.log(res);

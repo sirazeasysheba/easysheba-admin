@@ -239,6 +239,7 @@ const Services = () => {
           categoryList={createCategoryList(categories.categories)}
           serviceList={createServiceList(service.services)}
           handleServiceImage={handleServiceImage}
+          serviceImage={serviceImage}
           parentId={parentId}
           setParentId={setParentId}
           category={category}
