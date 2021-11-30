@@ -1,5 +1,5 @@
 import React from "react";
-import { Col, Container, Row } from "react-bootstrap";
+import { Accordion, Col, Container, Row } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import Header from "../Header/Header";
 
@@ -23,6 +23,31 @@ const Layout = (props) => {
                 </li>
                 <li>
                   <NavLink to={`/products`}>Sub-Services</NavLink>
+                </li>
+                <li>
+                  <Accordion flush>
+                    <Accordion.Item eventKey="0">
+                      <Accordion.Header className="accordion-header shadow-none">
+                        Details
+                      </Accordion.Header>
+                      <Accordion.Body>
+                        <ul>
+                          <li>
+                            <NavLink to={`/user`}>User</NavLink>
+                          </li>
+                          <li>
+                            <NavLink to={`/category`}>Category</NavLink>
+                          </li>
+                          <li>
+                            <NavLink to={`/services`}>Services</NavLink>
+                          </li>
+                          <li>
+                            <NavLink to={`/products`}>Sub-Services</NavLink>
+                          </li>
+                        </ul>
+                      </Accordion.Body>
+                    </Accordion.Item>
+                  </Accordion>
                 </li>
               </ul>
             </Col>

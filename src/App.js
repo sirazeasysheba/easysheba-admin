@@ -13,6 +13,7 @@ import Category from "./components/Category/Category";
 import Orders from "./components/Orders/Orders";
 import Product from "./components/Product/Product";
 import Services from "./components/Services/Services";
+import User from "./pages/User";
 function App() {
   const auth = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -50,6 +51,9 @@ function App() {
         </Route>
         <PrivateRoute exact path="/dashboard">
           <Dashboard />
+        </PrivateRoute>
+        <PrivateRoute exact path="/user">
+          <User />
         </PrivateRoute>
       </Switch>
     </div>
