@@ -13,9 +13,16 @@ const UpdateCategoriesModal = (props) => {
     checkedArray,
     handleCategoryInput,
     categoryList,
+    handleSubmit,
   } = props;
   return (
-    <Modals show={show} handleClose={handleClose} title={title} size={size}>
+    <Modals
+      show={show}
+      handleClose={handleClose}
+      title={title}
+      size={size}
+      handleSubmit={handleSubmit}
+    >
       <Row>
         <Col>
           <h6>Expanded</h6>

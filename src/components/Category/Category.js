@@ -21,6 +21,7 @@ import { AiOutlineCheckSquare } from "react-icons/ai";
 import UpdateCategoriesModal from "./UpdateCategoriesModal";
 import DeleteCategoryModal from "./DeleteCategoryModal";
 import AddCategoryModal from "./AddCategoryModal";
+import { ToastContainer, toast } from "react-toastify";
 
 const Category = (props) => {
   const [show, setShow] = useState(false);
@@ -55,7 +56,7 @@ const Category = (props) => {
     return categoryList;
   };
 
-  const handleClose = () => {
+  const handleSubmit = () => {
     const form = new FormData();
     // if (categoryName === "") {
     //   alert("Name is required");
@@ -65,17 +66,23 @@ const Category = (props) => {
     form.append("parentId", parentId);
     form.append("categoryImage", categoryImage);
     dispatch(addCategory(form));
-    // const cat = {
-    //   categoryName,
-    //   parentId,
-    //   categoryImage,
-    // };
-    // console.log(cat);
+    if (category.error) {
+      toast(category.error, {
+        type: "error",
+        theme: "colored",
+      });
+    } else {
+      toast("Added Successfully!", {
+        type: "success",
+        position: "top-right",
+        theme: "colored",
+      });
+    }
     setShow(false);
   };
 
   const handleShow = () => setShow(true);
-
+  const handleClose = () => setShow(false);
   const dispatch = useDispatch();
   const category = useSelector((state) => state.category);
   // useEffect(() => {
@@ -243,6 +250,7 @@ const Category = (props) => {
           categoryName={categoryName}
           parentId={parentId}
           handleCategoryImage={handleCategoryImage}
+          handleSubmit={handleSubmit}
         ></AddCategoryModal>
 
         {/* Update Modal */}
@@ -250,11 +258,12 @@ const Category = (props) => {
           size="lg"
           title="Update Category"
           show={updateCategoryModal}
-          handleClose={updateCategoriesForm}
+          handleClose={() => setUpdateCategoryModal(false)}
           expandedArray={expandedArray}
           checkedArray={checkedArray}
           handleCategoryInput={handleCategoryInput}
           categoryList={createCategoryList(category.categories)}
+          handleSubmit={updateCategoriesForm}
         ></UpdateCategoriesModal>
 
         {/* DeleteCategoryModal */}

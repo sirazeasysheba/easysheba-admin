@@ -21,6 +21,9 @@ const Login = () => {
   if (auth.authenticate) {
     return <Redirect to={`/home`} />;
   }
+  if (auth.authenticating) {
+    return <p>Loading....</p>;
+  }
   return (
     <>
       <Formik

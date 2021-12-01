@@ -31,6 +31,7 @@ const Services = () => {
   const [category, setCategory] = useState("");
   //Redux Store data
   const service = useSelector((state) => state.service);
+  console.log(service.services);
   const categories = useSelector((state) => state.category);
   const dispatch = useDispatch();
   //Render Service Data
@@ -252,12 +253,13 @@ const Services = () => {
           size="lg"
           title="Update Service"
           show={showUpdateServiceModal}
-          handleClose={updateServiceForm}
+          handleClose={() => setShowUpdateServiceModal(false)}
           expandedArray={expandedArray}
           checkedArray={checkedArray}
           handleServiceInput={handleServiceInput}
           categoryList={createCategoryList(categories.categories)}
           serviceList={createServiceList(service.services)}
+          handleSubmit={updateServiceForm}
         />
 
         {/* DeleteCategoryModal */}

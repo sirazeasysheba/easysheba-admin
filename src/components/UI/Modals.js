@@ -21,7 +21,7 @@ const Modals = (props) => {
               {...props}
               className="btn-sm shadow-none"
               variant="primary"
-              onClick={props.handleClose}
+              onClick={props.handleSubmit}
               style={{ backgroundColor: "#333333" }}
             >
               {props.btnTitle ? props.btnTitle : "Save"}

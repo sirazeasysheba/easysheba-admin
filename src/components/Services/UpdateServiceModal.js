@@ -14,10 +14,17 @@ const UpdateServiceModal = (props) => {
     handleServiceInput,
     categoryList,
     serviceList,
+    handleSubmit,
   } = props;
   return (
     <div>
-      <Modals show={show} handleClose={handleClose} title={title} size={size}>
+      <Modals
+        show={show}
+        handleClose={handleClose}
+        title={title}
+        size={size}
+        handleSubmit={handleSubmit}
+      >
         <Row>
           <Col>
             <h6>Expanded</h6>
@@ -138,7 +145,7 @@ const UpdateServiceModal = (props) => {
                     <Form.Select
                       aria-label="Default select example"
                       size="sm"
-                      value={item.category}
+                      value={item.category._id}
                       onChange={(e) =>
                         handleServiceInput(
                           "category",
