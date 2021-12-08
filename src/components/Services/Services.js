@@ -17,6 +17,7 @@ import AddServiceModal from "./AddServiceModal";
 import { deleteServicesAction, updateServiceAction } from "../../redux/actions";
 import UpdateServiceModal from "./UpdateServiceModal";
 import DeleteServiceModal from "./DeleteServiceModal";
+import { toast } from "react-toastify";
 const Services = () => {
   //States
   const [show, setShow] = useState(false);
@@ -29,6 +30,10 @@ const Services = () => {
   const [showDeleteServiceModal, setShowDeleteServiceModal] = useState(false);
   const [parentId, setParentId] = useState("");
   const [category, setCategory] = useState("");
+
+  const [details, setDetails] = useState("");
+  const [information, setInformation] = useState("");
+  const [notes, setNotes] = useState("");
   //Redux Store data
   const service = useSelector((state) => state.service);
   console.log(service.services);
@@ -60,6 +65,7 @@ const Services = () => {
         information: service.information,
         details: service.details,
         category: service.category,
+        notes: service.notes,
       });
       if (service.children.length > 0) {
         createServiceList(service.children, options);
@@ -119,7 +125,7 @@ const Services = () => {
       form.append("information", item.information);
       form.append("details", item.details);
       form.append("rating", item.rating);
-      form.append("category", item.category ? item.category : "");
+      form.append("notes", item.notes);
     });
     checkedArray.forEach((item, index) => {
       form.append("_id", item.value);
@@ -130,10 +136,16 @@ const Services = () => {
       form.append("information", item.information);
       form.append("details", item.details);
       form.append("rating", item.rating);
-      form.append("category", item.category ? item.category : "");
+      form.append("notes", item.notes);
     });
     dispatch(updateServiceAction(form));
+
     setShowUpdateServiceModal(false);
+    toast("Service Updated Successfully", {
+      type: "success",
+      position: "top-right",
+      theme: "colored",
+    });
   };
   const updateCheckedAndExpandedServices = () => {
     const services = createServiceList(service.services);
@@ -176,6 +188,11 @@ const Services = () => {
       dispatch(deleteServicesAction(checkedIdsArray));
     }
     setShowDeleteServiceModal(false);
+    toast("Service Deleted !!", {
+      type: "error",
+      position: "top-right",
+      theme: "colored",
+    });
   };
 
   return (
@@ -245,6 +262,12 @@ const Services = () => {
           setParentId={setParentId}
           category={category}
           setCategory={setCategory}
+          details={details}
+          setDetails={setDetails}
+          information={information}
+          setInformation={setInformation}
+          notes={notes}
+          setNotes={setNotes}
           btnTitle="Close"
         />
 
@@ -257,7 +280,6 @@ const Services = () => {
           expandedArray={expandedArray}
           checkedArray={checkedArray}
           handleServiceInput={handleServiceInput}
-          categoryList={createCategoryList(categories.categories)}
           serviceList={createServiceList(service.services)}
           handleSubmit={updateServiceForm}
         />

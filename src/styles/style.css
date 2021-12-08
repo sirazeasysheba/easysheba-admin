@@ -1,0 +1,139 @@
+* {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  background-color: #eee;
+  padding-top: 60px;
+  -webkit-box-shadow: inset 0 0 2px gray;
+          box-shadow: inset 0 0 2px gray;
+}
+
+.sidebar ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sidebar ul li a {
+  text-decoration: none;
+  display: block;
+  color: #333;
+  padding: 5px 10px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  margin: 5px 0 5px 10px;
+  border-radius: 5px 0 0 5px;
+}
+
+.sidebar ul li a.active {
+  background: #333;
+  color: #fff;
+}
+
+.accordion-header {
+  background: transparent !important;
+}
+
+.modal-header {
+  padding: 5px 15px !important;
+  background-color: #333333;
+  color: white;
+}
+
+.modal-title {
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  text-align: center !important;
+}
+
+.modal-footer {
+  padding: 5px 15px !important;
+}
+
+.action-btn-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.action-btn-container > button {
+  border: 0;
+  margin: 0 10px;
+  padding: 5px 0;
+  width: 120px;
+  font-size: 12px;
+  color: white;
+  border-radius: 5px;
+}
+
+.add-btn {
+  background-color: #42ba96;
+}
+
+.delete-btn {
+  background-color: red;
+}
+
+.edit-btn {
+  background-color: #333333;
+}
+
+.key {
+  font-weight: 700;
+}
+
+.error {
+  position: absolute;
+  color: red !important;
+  font-size: 0.8rem;
+}
+
+.react-data-table table {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.react-data-table table td,
+.react-data-table table th {
+  border: 1px solid #ddd;
+  padding: 8px;
+  font-size: 12px;
+}
+
+.react-data-table table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.react-data-table table tr:hover {
+  background-color: #ddd;
+}
+
+.react-data-table table th,
+.react-data-table tfoot td {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: center;
+  color: #333333;
+}
+
+.complete-order-btn {
+  border: none;
+  padding: 7px 20px;
+  background-color: #333333;
+  color: white;
+  border-radius: 10px;
+  font-size: 12px;
+}
+/*# sourceMappingURL=style.css.map */

@@ -5,7 +5,7 @@ import Layout from "../components/Layout/Layout";
 
 const Home = (props) => {
   const service = useSelector((state) => state.service);
-  const categories = useSelector((state) => state.category);
+  const orders = useSelector((state) => state.initialData.orders);
   const users = useSelector((state) => state.initialData);
   // console.log(service, categories);
   const createServiceList = (services, options = []) => {
@@ -56,7 +56,7 @@ const Home = (props) => {
                   className="mb-0 pb-0 text-white mt-1"
                   style={{ lineHeight: 1 }}
                 >
-                  1100+
+                  {orders.length}+
                 </h5>
                 <h5 className="mt-0 text-white">Order Served</h5>
               </div>

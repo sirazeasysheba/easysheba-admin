@@ -12,12 +12,13 @@ import ModalInput from "../UI/ModalInput";
 import DeleteProductModals from "./DeleteProductModals";
 import { IoIosTrash } from "react-icons/io";
 import UpdateProductModal from "./UpdateProductModal";
+import { ToastContainer, toast } from "react-toastify";
 const Product = (props) => {
   //Product
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [service, setService] = useState("");
-
+  const [info, setInfo] = useState("");
   const dispatch = useDispatch();
 
   const [show, setShow] = useState(false);
@@ -29,10 +30,16 @@ const Product = (props) => {
 
   const [showDeleteProductModal, setShowDeleteProductModal] = useState(false);
   const [productToDelete, setProductToDelete] = useState("");
-  const handleClose = () => {
-    const product = { name, price, service };
+
+  const handleSubmit = () => {
+    const product = { name, price, service, info };
     dispatch(addProduct(product));
     setShow(false);
+    toast("Added Successfully!", {
+      type: "success",
+      position: "top-right",
+      theme: "colored",
+    });
   };
 
   const handleShow = () => setShow(true);
@@ -79,12 +86,18 @@ const Product = (props) => {
 
   const updateProductModal = (product) => {
     setProductToUpdate(product);
+    console.log(product);
     setShowUpdateProductModal(true);
   };
 
   const updateProductForm = () => {
     dispatch(updateProductAction(productToUpdate));
     setShowUpdateProductModal(false);
+    toast("Updated Successfully!", {
+      type: "success",
+      position: "top-right",
+      theme: "colored",
+    });
   };
 
   const handleProductInput = (key, value) => {
@@ -94,14 +107,18 @@ const Product = (props) => {
 
   //Delete product
   const deleteProductModal = (product) => {
-    console.log(product._id);
+    console.log(product);
     setProductToDelete(product._id);
     setShowDeleteProductModal(true);
   };
   const deleteProductById = () => {
     if (productToDelete) {
-      console.log(productToDelete);
       dispatch(deleteProductAction(productToDelete));
+      toast("Product Deleted!", {
+        type: "error",
+        position: "top-right",
+        theme: "colored",
+      });
     }
     setShowDeleteProductModal(false);
   };
@@ -145,9 +162,10 @@ const Product = (props) => {
     return (
       <Modals
         show={show}
-        handleClose={handleClose}
+        handleClose={() => setShow(false)}
         title={"Add New Package"}
         size="lg"
+        handleSubmit={handleSubmit}
       >
         <Row>
           <Col>
@@ -188,6 +206,21 @@ const Product = (props) => {
               onChange={(e) => setPrice(e.target.value)}
               className="form-control-sm"
             />
+          </Col>
+        </Row>
+        <Row>
+          <Col md={12}>
+            <Form.Group className="mb-3">
+              <Form.Label className="fw-bold">
+                Additional Info <span className="text-muted">(Optional)</span>
+              </Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                value={info}
+                onChange={(e) => setInfo(e.target.value)}
+              />
+            </Form.Group>
           </Col>
         </Row>
       </Modals>
@@ -282,11 +315,12 @@ const Product = (props) => {
         {/* UpdateProductModal */}
         <UpdateProductModal
           show={showUpdateProductModal}
-          handleClose={updateProductForm}
+          handleClose={() => setShowUpdateProductModal(false)}
           title={"Update Package"}
           size={"md"}
           handleProductInput={handleProductInput}
           productToUpdate={productToUpdate}
+          handleSubmit={updateProductForm}
         ></UpdateProductModal>
 
         {/* Delete Product Modal */}
@@ -320,6 +354,7 @@ const Product = (props) => {
         </Container>
         {renderAddProductModal()}
         {renderProductDetailsModal()}
+        <ToastContainer position="top-center" />
       </Layout>
     </div>
   );

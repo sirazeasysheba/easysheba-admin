@@ -58,7 +58,7 @@ const Header = () => {
           </Link>
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
-            <Nav className="me-auto">
+            {/* <Nav className="me-auto">
               <Nav.Link href="#features">Features</Nav.Link>
               <Nav.Link href="#pricing">Pricing</Nav.Link>
               <NavDropdown title="Dropdown" id="collasible-nav-dropdown">
@@ -74,7 +74,7 @@ const Header = () => {
                   Separated link
                 </NavDropdown.Item>
               </NavDropdown>
-            </Nav>
+            </Nav> */}
 
             {auth.authenticate
               ? renderLoggedInLinks()

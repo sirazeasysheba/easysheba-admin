@@ -6,6 +6,7 @@ import Modals from "../UI/Modals";
 import * as Yup from "yup";
 import { useDispatch } from "react-redux";
 import { addService } from "../../redux/actions";
+import { ToastContainer, toast } from "react-toastify";
 const AddServiceModal = (props) => {
   const {
     size,
@@ -19,14 +20,18 @@ const AddServiceModal = (props) => {
     handleServiceImage,
     serviceList,
     categoryList,
-    serviceImage,
     btnTitle,
+    details,
+    setDetails,
+    information,
+    setInformation,
+    notes,
+    setNotes,
+    serviceImage,
   } = props;
   const validate = Yup.object({
     name: Yup.string().required("Name is required"),
     priceRange: Yup.string().required("Price Range is required"),
-    information: Yup.string().required("Information is required"),
-    details: Yup.string().required("Details is required"),
     rating: Yup.number().required("Rating is required"),
   });
   const dispatch = useDispatch();
@@ -47,8 +52,6 @@ const AddServiceModal = (props) => {
                 initialValues={{
                   name: "",
                   priceRange: "",
-                  information: "",
-                  details: "",
                   rating: "",
                 }}
                 validationSchema={validate}
@@ -56,9 +59,17 @@ const AddServiceModal = (props) => {
                   const service = values;
                   service.parentId = parentId;
                   service.category = category;
+                  service.details = details;
+                  service.information = information;
+                  service.notes = notes;
                   // service.serviceImage = serviceImage;
-                  console.log(service, serviceImage);
+
                   dispatch(addService(service));
+                  toast("Service Added Successfully", {
+                    type: "success",
+                    position: "top-right",
+                    theme: "colored",
+                  });
                 }}
               >
                 {(formik) => (
@@ -98,32 +109,57 @@ const AddServiceModal = (props) => {
                         </Col>
                         <Col md={6}>
                           <Input
-                            label="Information"
-                            type="text"
-                            placeholder="Service Information"
-                            name="information"
-                            style={{ maxWidth: 300 }}
-                          />
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col md={6}>
-                          <Input
-                            label="Details"
-                            type="text"
-                            placeholder="Service Details"
-                            name="details"
-                            style={{ maxWidth: 300 }}
-                          />
-                        </Col>
-                        <Col md={6}>
-                          <Input
                             label="Rating"
                             type="text"
                             placeholder="Service Rating"
                             name="rating"
                             style={{ maxWidth: 300 }}
                           />
+                        </Col>
+                      </Row>
+                      <Row>
+                        <Col md={12}>
+                          <Form2.Group className="mb-3">
+                            <Form2.Label className="fw-bold">
+                              Details <span className="text-danger">*</span>
+                            </Form2.Label>
+                            <Form2.Control
+                              as="textarea"
+                              rows={3}
+                              value={details}
+                              onChange={(e) => setDetails(e.target.value)}
+                            />
+                          </Form2.Group>
+                        </Col>
+                      </Row>
+                      <Row>
+                        <Col md={12}>
+                          <Form2.Group className="mb-3">
+                            <Form2.Label className="fw-bold">
+                              Information <span className="text-danger">*</span>
+                            </Form2.Label>
+                            <Form2.Control
+                              as="textarea"
+                              rows={3}
+                              value={information}
+                              onChange={(e) => setInformation(e.target.value)}
+                            />
+                          </Form2.Group>
+                        </Col>
+                      </Row>
+                      <Row>
+                        <Col md={12}>
+                          <Form2.Group className="mb-3">
+                            <Form2.Label className="fw-bold">
+                              Notes <span className="text-danger">*</span>
+                            </Form2.Label>
+                            <Form2.Control
+                              as="textarea"
+                              rows={3}
+                              value={notes}
+                              onChange={(e) => setNotes(e.target.value)}
+                            />
+                          </Form2.Group>
                         </Col>
                       </Row>
                       <Row>
@@ -195,6 +231,7 @@ const AddServiceModal = (props) => {
           </Row>
         </Container>
       </Modals>
+      <ToastContainer position="top-center" />
     </div>
   );
 };

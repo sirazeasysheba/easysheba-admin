@@ -5,6 +5,8 @@ const initData = {
   users: [],
   categories: [],
   products: [],
+  orders: [],
+  addresses: [],
 };
 const initialDataReducer = (state = initData, action) => {
   switch (action.type) {
@@ -14,7 +16,18 @@ const initialDataReducer = (state = initData, action) => {
         users: action.payload.users,
       };
       break;
-
+    case userConstants.GET_ALL_ORDERS:
+      state = {
+        ...state,
+        orders: action.payload.orders,
+      };
+      break;
+    case userConstants.GET_ALL_ADDRESSES:
+      state = {
+        ...state,
+        addresses: action.payload.addresses,
+      };
+      break;
     default:
       return state;
   }

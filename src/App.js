@@ -14,16 +14,22 @@ import Orders from "./components/Orders/Orders";
 import Product from "./components/Product/Product";
 import Services from "./components/Services/Services";
 import User from "./pages/User";
+import "react-toastify/dist/ReactToastify.css";
 function App() {
   const auth = useSelector((state) => state.auth);
+  const token = localStorage.getItem("token");
   const dispatch = useDispatch();
   useEffect(() => {
     if (!auth.authenticate) {
       dispatch(isUserLoggedIn());
     }
-
-    dispatch(getInitialData());
   }, []);
+
+  useEffect(() => {
+    if (token) {
+      dispatch(getInitialData());
+    }
+  }, [token]);
   return (
     <div className="App">
       <Layout />

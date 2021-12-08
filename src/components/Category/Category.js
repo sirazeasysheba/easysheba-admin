@@ -166,6 +166,11 @@ const Category = (props) => {
     });
     dispatch(updateCategoryAction(form));
     setUpdateCategoryModal(false);
+    toast("Category Updated Successfully", {
+      type: "success",
+      position: "top-right",
+      theme: "colored",
+    });
   };
 
   const deleteCategory = () => {
@@ -181,6 +186,11 @@ const Category = (props) => {
       dispatch(deleteCategoriesAction(checkedIdsArray));
     }
     setDeleteCategoryModal(false);
+    toast("Category Deleted !!", {
+      type: "error",
+      position: "top-right",
+      theme: "colored",
+    });
   };
 
   return (
@@ -275,6 +285,7 @@ const Category = (props) => {
           expandedArray={expandedArray}
           checkedArray={checkedArray}
         ></DeleteCategoryModal>
+        <ToastContainer position="top-center" />
         {/* {renderAddCategoryModal()} */}
         {/* {renderUpdateModal()} */}
         {/* {renderDeleteCategoryModal()} */}

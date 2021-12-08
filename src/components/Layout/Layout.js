@@ -36,13 +36,7 @@ const Layout = (props) => {
                             <NavLink to={`/user`}>User</NavLink>
                           </li>
                           <li>
-                            <NavLink to={`/category`}>Category</NavLink>
-                          </li>
-                          <li>
-                            <NavLink to={`/services`}>Services</NavLink>
-                          </li>
-                          <li>
-                            <NavLink to={`/products`}>Sub-Services</NavLink>
+                            <NavLink to={`/orders`}>Orders</NavLink>
                           </li>
                         </ul>
                       </Accordion.Body>
