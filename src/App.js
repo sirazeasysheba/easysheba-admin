@@ -49,9 +49,9 @@ function App() {
         <PrivateRoute exact path="/orders">
           <Orders />
         </PrivateRoute>
-        <Route exact path="/signup">
+        {/* <Route exact path="/signup">
           <SignUp />
-        </Route>
+        </Route> */}
         <Route exact path="/login">
           <Login />
         </Route>

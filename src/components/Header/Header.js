@@ -33,7 +33,7 @@ const Header = () => {
           </NavLink>
         </li>
         <li className="nav-item">
-          <NavLink to="/signup" className="nav-link">
+          <NavLink to="/" className="nav-link">
             Signup
           </NavLink>
         </li>
@@ -58,10 +58,12 @@ const Header = () => {
           </Link>
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
-            {/* <Nav className="me-auto">
-              <Nav.Link href="#features">Features</Nav.Link>
-              <Nav.Link href="#pricing">Pricing</Nav.Link>
-              <NavDropdown title="Dropdown" id="collasible-nav-dropdown">
+            <Nav className="me-auto">
+              <Nav.Link href="https://www.easysheba.com" target="_blank">
+                EasySheba
+              </Nav.Link>
+              {/* <Nav.Link href="#pricing">Pricing</Nav.Link> */}
+              {/* <NavDropdown title="Dropdown" id="collasible-nav-dropdown">
                 <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
                 <NavDropdown.Item href="#action/3.2">
                   Another action
@@ -73,8 +75,8 @@ const Header = () => {
                 <NavDropdown.Item href="#action/3.4">
                   Separated link
                 </NavDropdown.Item>
-              </NavDropdown>
-            </Nav> */}
+              </NavDropdown> */}
+            </Nav>
 
             {auth.authenticate
               ? renderLoggedInLinks()
